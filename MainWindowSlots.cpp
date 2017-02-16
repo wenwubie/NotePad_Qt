@@ -9,6 +9,9 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QList>
+#include <QMenuBar>
+#include <QToolBar>
+#include <QObjectList>
 #include <QUrl>
 
 QString MainWindow::showFileDialog(QFileDialog::AcceptMode mode, QString title)
@@ -274,4 +277,77 @@ void MainWindow::dropEvent (QDropEvent* e)
     {
         e->ignore ();
     }
+}
+
+QAction* MainWindow::findMenuBarAction(QString text)
+{
+    QAction* ret = NULL;
+    const QObjectList& list = menuBar ()->children ();
+
+    for(int i=0; i<list.count (); i++)
+    {
+        QMenu* menu = dynamic_cast<QMenu*>(list[i]);
+
+        if( menu != NULL)
+        {
+            QList<QAction*> actionList = menu->actions ();
+            for(int j=0; j<actionList.count (); j++)
+            {
+                if( actionList[j]->text ().startsWith (text) )
+                {
+                    ret = actionList[j];
+                    break;
+                }
+            }
+        }
+    }
+    return ret;
+}
+
+QAction* MainWindow::findToolBarAction(QString text)
+{
+    QAction* ret = NULL;
+    const QObjectList& list = children ();
+
+    for(int i=0; i<list.count (); i++)
+    {
+        QToolBar* toolBar = dynamic_cast<QToolBar*>(list[i]);
+
+        if( toolBar != NULL)
+        {
+            QList<QAction*> actionList = toolBar->actions ();
+            for(int j=0; j<actionList.count (); j++)
+            {
+                if( actionList[j]->toolTip ().startsWith (text) )
+                {
+                    ret = actionList[j];
+                    break;
+                }
+            }
+        }
+    }
+    return ret;
+}
+
+void MainWindow::onRedoAvailable(bool available)
+{
+    qDebug () << "redo available";
+    findMenuBarAction ("Redo")->setEnabled (available);
+    findToolBarAction ("Redo")->setEnabled (available);
+}
+
+void MainWindow::onCopyAvalilable(bool available)
+{
+    qDebug () << "copy available";
+    findMenuBarAction ("Copy")->setEnabled (available);
+    findToolBarAction ("Copy")->setEnabled (available);
+    findMenuBarAction ("Cut")->setEnabled (available);
+    findToolBarAction ("Cut")->setEnabled (available);
+}
+
+void MainWindow::onUndoAvailable(bool available)
+{
+    qDebug () << "undo available";
+    findMenuBarAction ("Undo")->setEnabled (available);
+    findToolBarAction ("Undo")->setEnabled (available);
 }

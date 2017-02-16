@@ -118,6 +118,9 @@ bool MainWindow::initMainEdit()
     setCentralWidget (&mainEdit);
 
     connect(&mainEdit,SIGNAL(textChanged()), this, SLOT(onTextChanged()));
+    connect (&mainEdit, SIGNAL(copyAvailable(bool)), this, SLOT(onCopyAvalilable(bool)));
+    connect (&mainEdit, SIGNAL(redoAvailable(bool)), this, SLOT(onRedoAvailable(bool)));
+    connect (&mainEdit, SIGNAL(undoAvailable(bool)), this, SLOT(onUndoAvailable(bool)));
 
     return ret;
 }
@@ -188,7 +191,9 @@ bool MainWindow::initEditToolItem(QToolBar* tb)
 
     if( ret )
     {
+        connect (action, SIGNAL(triggered()), &mainEdit, SLOT(undo()));
         tb->addAction (action);
+        action->setEnabled (false);
     }
 
     // redo action
@@ -196,7 +201,9 @@ bool MainWindow::initEditToolItem(QToolBar* tb)
 
     if( ret )
     {
+        connect (action, SIGNAL(triggered()), &mainEdit, SLOT(redo()));
         tb->addAction (action);
+        action->setEnabled (false);
     }
 
     // cut action
@@ -204,7 +211,9 @@ bool MainWindow::initEditToolItem(QToolBar* tb)
 
     if( ret )
     {
+        connect (action, SIGNAL(triggered()), &mainEdit, SLOT(cut()));
         tb->addAction (action);
+        action->setEnabled (false);
     }
 
     // copy action
@@ -212,7 +221,9 @@ bool MainWindow::initEditToolItem(QToolBar* tb)
 
     if( ret )
     {
+        connect (action, SIGNAL(triggered()), &mainEdit, SLOT(copy()));
         tb->addAction (action);
+        action->setEnabled (false);
     }
 
     // paste action
@@ -220,6 +231,7 @@ bool MainWindow::initEditToolItem(QToolBar* tb)
 
     if( ret )
     {
+        connect (action, SIGNAL(triggered()), &mainEdit, SLOT(paste()));
         tb->addAction (action);
     }
 
@@ -396,11 +408,23 @@ bool MainWindow::initEditMenu(QMenuBar* mb)
         QAction* action = NULL;
 
         // redo action
+        ret = ret && makeAction (action, mb, "Undo(&U)", Qt::CTRL + Qt::Key_U, false);
+
+        if( ret )
+        {
+            connect (action, SIGNAL(triggered()), &mainEdit, SLOT(undo()));
+            editMenu->addAction (action);
+            action->setEnabled (false);
+        }
+
+        // redo action
         ret = ret && makeAction (action, mb, "Redo(&U)", Qt::CTRL + Qt::Key_Z, false);
 
         if( ret )
         {
+            connect (action, SIGNAL(triggered()), &mainEdit, SLOT(redo()));
             editMenu->addAction (action);
+            action->setEnabled (false);
         }
 
         editMenu->addSeparator ();
@@ -410,7 +434,9 @@ bool MainWindow::initEditMenu(QMenuBar* mb)
 
         if( ret )
         {
+            connect (action, SIGNAL(triggered()), &mainEdit, SLOT(cut()));
             editMenu->addAction (action);
+            action->setEnabled (false);
         }
 
         // copy action
@@ -418,7 +444,9 @@ bool MainWindow::initEditMenu(QMenuBar* mb)
 
         if( ret )
         {
+            connect (action, SIGNAL(triggered()), &mainEdit, SLOT(copy()));
             editMenu->addAction (action);
+            action->setEnabled (false);
         }
 
         // paste action
@@ -426,6 +454,7 @@ bool MainWindow::initEditMenu(QMenuBar* mb)
 
         if( ret )
         {
+            connect (action, SIGNAL(triggered()), &mainEdit, SLOT(paste()));
             editMenu->addAction (action);
         }
 

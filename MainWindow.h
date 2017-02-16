@@ -52,12 +52,20 @@ protected:
     void closeEvent (QCloseEvent * e);
     void dragEnterEvent (QDragEnterEvent* e);
     void dropEvent (QDropEvent* e);
+    QAction* findMenuBarAction(QString text);
+    QAction* findToolBarAction(QString text);
+
 private slots:
     void onFileNew();
     void onFileOpen();
     void onFileSave();
     void onFileSaveAs();
     void onTextChanged();
+
+    void onRedoAvailable(bool available);
+    void onCopyAvalilable(bool available);
+    void onUndoAvailable(bool available);
+
 };
 
 #endif // MAINWINDOW_H
