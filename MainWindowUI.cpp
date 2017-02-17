@@ -121,6 +121,7 @@ bool MainWindow::initMainEdit()
     connect (&mainEdit, SIGNAL(copyAvailable(bool)), this, SLOT(onCopyAvalilable(bool)));
     connect (&mainEdit, SIGNAL(redoAvailable(bool)), this, SLOT(onRedoAvailable(bool)));
     connect (&mainEdit, SIGNAL(undoAvailable(bool)), this, SLOT(onUndoAvailable(bool)));
+    connect (&mainEdit, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPosChanged()));
 
     return ret;
 }
@@ -174,6 +175,7 @@ bool MainWindow::initFileToolItem(QToolBar* tb)
 
     if( ret )
     {
+        connect (action, SIGNAL(triggered()), this, SLOT(onFilePrint()));
         tb->addAction (action);
     }
 
@@ -372,6 +374,7 @@ bool MainWindow::initFileMenu(QMenuBar* mb)
 
         if( ret )
         {
+            connect (action, SIGNAL(triggered()), this, SLOT(onFilePrint()));
             fileMenu->addAction (action);
         }
 

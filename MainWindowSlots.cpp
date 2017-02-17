@@ -13,6 +13,7 @@
 #include <QToolBar>
 #include <QObjectList>
 #include <QUrl>
+#include <QPrintDialog>
 
 QString MainWindow::showFileDialog(QFileDialog::AcceptMode mode, QString title)
 {
@@ -331,14 +332,12 @@ QAction* MainWindow::findToolBarAction(QString text)
 
 void MainWindow::onRedoAvailable(bool available)
 {
-    qDebug () << "redo available";
     findMenuBarAction ("Redo")->setEnabled (available);
     findToolBarAction ("Redo")->setEnabled (available);
 }
 
 void MainWindow::onCopyAvalilable(bool available)
 {
-    qDebug () << "copy available";
     findMenuBarAction ("Copy")->setEnabled (available);
     findToolBarAction ("Copy")->setEnabled (available);
     findMenuBarAction ("Cut")->setEnabled (available);
@@ -347,7 +346,44 @@ void MainWindow::onCopyAvalilable(bool available)
 
 void MainWindow::onUndoAvailable(bool available)
 {
-    qDebug () << "undo available";
     findMenuBarAction ("Undo")->setEnabled (available);
     findToolBarAction ("Undo")->setEnabled (available);
+}
+
+void MainWindow::onFilePrint()
+{
+    QPrintDialog dlg(this);
+
+    dlg.setWindowTitle ("Print");
+
+    if( dlg.exec () == QPrintDialog::Accepted )
+    {
+        QPrinter* p = dlg.printer ();
+
+        mainEdit.document ()->print (p);
+    }
+}
+
+void MainWindow::onCursorPosChanged()
+{
+    int pos = mainEdit.textCursor ().position ();
+    QString text = mainEdit.toPlainText ();
+    int ln = 0;
+    int col = 0;
+    int flag = -1;
+
+    for(int i=0; i<pos; i++)
+    {
+        if( text[i] == '\n' )
+        {
+            ln++;
+            flag = i;
+        }
+    }
+
+    flag++;
+
+    col = pos - flag;
+
+    statusLb1.setText ("Ln: " + QString::number (ln + 1) + "   Col: " + QString::number (col + 1));
 }
