@@ -14,6 +14,8 @@
 #include <QObjectList>
 #include <QUrl>
 #include <QPrintDialog>
+#include <QKeyEvent>
+#include <QApplication>
 
 QString MainWindow::showFileDialog(QFileDialog::AcceptMode mode, QString title)
 {
@@ -386,4 +388,23 @@ void MainWindow::onCursorPosChanged()
     col = pos - flag;
 
     statusLb1.setText ("Ln: " + QString::number (ln + 1) + "   Col: " + QString::number (col + 1));
+}
+
+void MainWindow::onEditDelete()
+{
+    QKeyEvent keyPress(QKeyEvent::KeyPress, Qt::Key_Delete, Qt::NoModifier);
+    QKeyEvent keyRelease(QKeyEvent::KeyRelease, Qt::Key_Delete, Qt::NoModifier);
+
+    QApplication::sendEvent (&mainEdit, &keyPress);
+    QApplication::sendEvent (&mainEdit, &keyRelease);
+}
+
+void MainWindow::onEditFind()
+{
+    spFindDlg->show ();
+}
+
+void MainWindow::onExit()
+{
+    close();
 }

@@ -7,8 +7,7 @@
 #include <QStatusBar>
 #include <QLabel>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+MainWindow::MainWindow() : spFindDlg(new FindDialog(this))
 {
     setWindowTitle ("NotePad - [ New ]");
     setAcceptDrops (true);
@@ -242,6 +241,7 @@ bool MainWindow::initEditToolItem(QToolBar* tb)
 
     if( ret )
     {
+        connect (action, SIGNAL(triggered()), this, SLOT(onEditFind()));
         tb->addAction (action);
     }
 
@@ -385,6 +385,7 @@ bool MainWindow::initFileMenu(QMenuBar* mb)
 
         if( ret )
         {
+            connect (action, SIGNAL(triggered()), this, SLOT(onExit()));
             fileMenu->addAction (action);
         }
     }
@@ -466,6 +467,7 @@ bool MainWindow::initEditMenu(QMenuBar* mb)
 
         if( ret )
         {
+            connect (action, SIGNAL(triggered()), this, SLOT(onEditDelete()));
             editMenu->addAction (action);
         }
 
@@ -476,6 +478,7 @@ bool MainWindow::initEditMenu(QMenuBar* mb)
 
         if( ret )
         {
+            connect (action, SIGNAL(triggered()), this, SLOT(onEditFind()));
             editMenu->addAction (action);
         }
 
