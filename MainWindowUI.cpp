@@ -7,7 +7,7 @@
 #include <QStatusBar>
 #include <QLabel>
 
-MainWindow::MainWindow() : spFindDlg(new FindDialog(this))
+MainWindow::MainWindow() : spFindDlg(new FindDialog(this, &mainEdit))
 {
     setWindowTitle ("NotePad - [ New ]");
     setAcceptDrops (true);
