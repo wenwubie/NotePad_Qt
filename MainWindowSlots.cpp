@@ -404,6 +404,11 @@ void MainWindow::onEditFind()
     spFindDlg->show ();
 }
 
+void MainWindow::onReplace()
+{
+    repDlg->show ();
+}
+
 void MainWindow::onExit()
 {
     close();

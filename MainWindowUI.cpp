@@ -6,8 +6,11 @@
 #include <QSize>
 #include <QStatusBar>
 #include <QLabel>
+#include <QPalette>
 
-MainWindow::MainWindow() : spFindDlg(new FindDialog(this, &mainEdit))
+MainWindow::MainWindow() :
+    spFindDlg(new FindDialog(this, &mainEdit)),
+    repDlg(new ReplaceDialog(this, &mainEdit))
 {
     setWindowTitle ("NotePad - [ New ]");
     setAcceptDrops (true);
@@ -111,8 +114,13 @@ bool MainWindow::initStatusBar()
 bool MainWindow::initMainEdit()
 {
     bool ret = true;
-
+    QPalette mPalette = mainEdit.palette ();
     mainEdit.setParent (this);
+
+    mPalette.setColor (QPalette::Inactive, QPalette::Highlight, mPalette.color (QPalette::Active, QPalette::Highlight));
+    mPalette.setColor (QPalette::Inactive, QPalette::HighlightedText, mPalette.color (QPalette::Active, QPalette::HighlightedText));
+
+    mainEdit.setPalette (mPalette);
 
     setCentralWidget (&mainEdit);
 
@@ -250,6 +258,7 @@ bool MainWindow::initEditToolItem(QToolBar* tb)
 
     if( ret )
     {
+        connect (action, SIGNAL(triggered()), this, SLOT(onReplace()));
         tb->addAction (action);
     }
 
@@ -495,6 +504,7 @@ bool MainWindow::initEditMenu(QMenuBar* mb)
 
         if( ret )
         {
+            connect (action, SIGNAL(triggered()), this, SLOT(onReplace()));
             editMenu->addAction (action);
         }
 
