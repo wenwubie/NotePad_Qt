@@ -39,10 +39,10 @@ private:
     bool initViewMenu(QMenuBar* mb);
     bool initHelpMenu(QMenuBar* mb);
 
-    bool initFileToolItem(QToolBar* tb);
-    bool initEditToolItem(QToolBar* tb);
-    bool initFormatToolItem(QToolBar* tb);
-    bool initViewToolItem(QToolBar* tb);
+    bool initToolItem(QToolBar* tb);
+//    bool initEditToolItem(QToolBar* tb);
+//    bool initFormatToolItem(QToolBar* tb);
+//    bool initViewToolItem(QToolBar* tb);
 
     bool makeAction(QAction*& action, QWidget* parent, QString text, int key, bool checkable);
     bool makeAction(QAction*& action, QWidget* parent, QString tip, QString icon);
@@ -73,7 +73,10 @@ private slots:
     void onUndoAvailable(bool available);
     void onEditDelete();
     void onEditFind();
+    void onEditGoto();
     void onReplace();
+    void onStatusBar();
+    void onToolBar();
     void onExit();
 
 };

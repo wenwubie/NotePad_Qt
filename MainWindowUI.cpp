@@ -62,20 +62,26 @@ bool MainWindow::initMenuBar()
 bool MainWindow::initToolBar()
 {
     bool ret = true;
-    QToolBar* ftb = addToolBar ("File Tool Bar");
-    QToolBar* etb = addToolBar ("Edit Tool Bar");
-    QToolBar* fttb = addToolBar ("Format Tool Bar");
-    QToolBar* vtb = addToolBar ("View Tool Bar");
 
-    ftb->setIconSize (QSize(16, 16));
-    etb->setIconSize (QSize(16, 16));
-    fttb->setIconSize (QSize(16, 16));
-    vtb->setIconSize (QSize(16, 16));
+    QToolBar* tb = addToolBar ("Tool Bar");
 
-    ret = ret && initFileToolItem (ftb);
-    ret = ret && initEditToolItem (etb);
-    ret = ret && initFormatToolItem (fttb);
-    ret = ret && initViewToolItem (vtb);
+//    QToolBar* ftb = addToolBar ("File Tool Bar");
+//    QToolBar* etb = addToolBar ("Edit Tool Bar");
+//    QToolBar* fttb = addToolBar ("Format Tool Bar");
+//    QToolBar* vtb = addToolBar ("View Tool Bar");
+
+    tb->setIconSize (QSize(16, 16));
+
+//    ftb->setIconSize (QSize(16, 16));
+//    etb->setIconSize (QSize(16, 16));
+//    fttb->setIconSize (QSize(16, 16));
+//    vtb->setIconSize (QSize(16, 16));
+
+    ret = ret && initToolItem (tb);
+//    ret = ret && initFileToolItem (ftb);
+//    ret = ret && initEditToolItem (etb);
+//    ret = ret && initFormatToolItem (fttb);
+//    ret = ret && initViewToolItem (vtb);
 
     return ret;
 }
@@ -133,7 +139,7 @@ bool MainWindow::initMainEdit()
     return ret;
 }
 
-bool MainWindow::initFileToolItem(QToolBar* tb)
+bool MainWindow::initToolItem(QToolBar* tb)
 {
     bool ret = true;
 
@@ -176,24 +182,6 @@ bool MainWindow::initFileToolItem(QToolBar* tb)
     }
 
     tb->addSeparator ();
-
-    // print tool action
-    ret = ret&& makeAction (action,  tb, "Print", ":/Res/pic/print.png");
-
-    if( ret )
-    {
-        connect (action, SIGNAL(triggered()), this, SLOT(onFilePrint()));
-        tb->addAction (action);
-    }
-
-    return ret;
-}
-
-bool MainWindow::initEditToolItem(QToolBar* tb)
-{
-    bool ret = true;
-
-    QAction* action = NULL;
 
     // undo action
     ret = ret&& makeAction (action,  tb, "Undo", ":/Res/pic/undo.png");
@@ -249,7 +237,6 @@ bool MainWindow::initEditToolItem(QToolBar* tb)
 
     if( ret )
     {
-        connect (action, SIGNAL(triggered()), this, SLOT(onEditFind()));
         tb->addAction (action);
     }
 
@@ -258,7 +245,6 @@ bool MainWindow::initEditToolItem(QToolBar* tb)
 
     if( ret )
     {
-        connect (action, SIGNAL(triggered()), this, SLOT(onReplace()));
         tb->addAction (action);
     }
 
@@ -270,21 +256,23 @@ bool MainWindow::initEditToolItem(QToolBar* tb)
         tb->addAction (action);
     }
 
-    return ret;
-}
+    tb->addSeparator ();
 
-bool MainWindow::initFormatToolItem(QToolBar* tb)
-{
-    bool ret = true;
+    // print tool action
+    ret = ret&& makeAction (action,  tb, "Print", ":/Res/pic/print.png");
 
-    QAction* action = NULL;
+    if( ret )
+    {
+    connect (action, SIGNAL(triggered()), this, SLOT(onFilePrint()));
+    tb->addAction (action);
+    }
 
     // wrap action
     ret = ret&& makeAction (action, tb, "Wrap", ":/Res/pic/wrap.png");
 
     if( ret )
     {
-        tb->addAction (action);
+    tb->addAction (action);
     }
 
     // font action
@@ -295,21 +283,17 @@ bool MainWindow::initFormatToolItem(QToolBar* tb)
         tb->addAction (action);
     }
 
-    return ret;
-}
-
-bool MainWindow::initViewToolItem(QToolBar* tb)
-{
-    bool ret = true;
-
-    QAction* action = NULL;
+    tb->addSeparator ();
 
     // tool action
     ret = ret&& makeAction (action, tb, "Tool", ":/Res/pic/tool.png");
 
     if( ret )
     {
-        tb->addAction (action);
+        action->setCheckable (true);
+        action->setChecked (true);
+        connect (action, SIGNAL(triggered()), this, SLOT(onToolBar()));
+       tb->addAction (action);
     }
 
     // status action
@@ -317,7 +301,10 @@ bool MainWindow::initViewToolItem(QToolBar* tb)
 
     if( ret )
     {
-        tb->addAction (action);
+        action->setCheckable (true);
+        action->setChecked (true);
+        connect (action, SIGNAL(triggered()), this, SLOT(onStatusBar()));
+       tb->addAction (action);
     }
 
     return ret;
@@ -370,6 +357,8 @@ bool MainWindow::initFileMenu(QMenuBar* mb)
 
         fileMenu->addSeparator ();
 
+
+
         // page setting action
         ret = ret && makeAction (action, mb, "Page Setting(&U)...", 0, false);
 
@@ -407,6 +396,7 @@ bool MainWindow::initFileMenu(QMenuBar* mb)
     {
         delete fileMenu;
     }
+
 
     return ret;
 }
@@ -508,11 +498,12 @@ bool MainWindow::initEditMenu(QMenuBar* mb)
             editMenu->addAction (action);
         }
 
-        // skip action
-        ret = ret && makeAction (action, mb, "Skip(&G)...", Qt::CTRL + Qt::Key_G, false);
+        // goto action
+        ret = ret && makeAction (action, mb, "Goto(&G)...", Qt::CTRL + Qt::Key_G, false);
 
         if( ret )
         {
+            connect (action, SIGNAL(triggered()), this, SLOT(onEditGoto()));
             editMenu->addAction (action);
         }
 
@@ -598,14 +589,20 @@ bool MainWindow::initViewMenu(QMenuBar* mb)
 
         if( ret )
         {
+            action->setCheckable (true);
+            action->setChecked (true);
+            connect (action, SIGNAL(triggered()), this, SLOT(onToolBar()));
             viewMenu->addAction (action);
         }
 
-        // statues  bar action
-        ret = ret && makeAction (action, mb, "Statues Bar(&S)", 0, true);
+        // status  bar action
+        ret = ret && makeAction (action, mb, "Status Bar(&S)", 0, true);
 
         if( ret )
         {
+            action->setCheckable (true);
+            action->setChecked (true);
+            connect (action, SIGNAL(triggered()), this, SLOT(onStatusBar()));
             viewMenu->addAction (action);
         }
     }

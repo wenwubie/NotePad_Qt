@@ -11,9 +11,11 @@
 #include <QList>
 #include <QMenuBar>
 #include <QToolBar>
+#include <QStatusBar>
 #include <QObjectList>
 #include <QUrl>
 #include <QPrintDialog>
+#include <QInputDialog>
 #include <QKeyEvent>
 #include <QApplication>
 
@@ -407,6 +409,65 @@ void MainWindow::onEditFind()
 void MainWindow::onReplace()
 {
     repDlg->show ();
+}
+
+void MainWindow::onEditGoto()
+{
+
+    bool ok = false;
+    int ln = QInputDialog::getInt (this, "Goto", "Line:", 1, 1, mainEdit.document ()->lineCount (), 1, &ok, Qt::WindowCloseButtonHint | Qt::Drawer);
+
+    if( ok )
+    {
+        QString text = mainEdit.toPlainText ();
+        QTextCursor c = mainEdit.textCursor ();
+        int pos = 0;
+        int next = -1;
+
+        for(int i=0; i<ln; i++)
+        {
+                pos = next + 1;
+                next = text.indexOf ('\n', pos);
+        }
+
+        c.setPosition (pos);
+
+        mainEdit.setTextCursor (c);
+    }
+}
+
+void MainWindow::onStatusBar()
+{
+    QStatusBar* sb = statusBar ();
+    bool visible = sb->isVisible ();
+
+    sb->setVisible (!visible);
+
+    findToolBarAction ("Status")->setChecked (!visible);
+    findMenuBarAction ("Status Bar")->setChecked (!visible);
+
+}
+
+void MainWindow::onToolBar()
+{
+    const QObjectList& list = children ();
+
+    for(int i=0; i<list.count (); i++)
+    {
+        QToolBar* tb = dynamic_cast<QToolBar*>(list[i]);
+
+        if( tb != NULL )
+        {
+            bool visible = tb->isVisible ();
+
+            tb->setVisible (!visible);
+
+            findToolBarAction ("Tool")->setChecked(!visible);
+            findMenuBarAction ("Tool Bar")->setChecked (!visible);
+
+            break;
+        }
+    }
 }
 
 void MainWindow::onExit()
