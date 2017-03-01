@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "AboutDialog.h"
 #include <QDebug>
 #include <QFileDialog>
 #include <QStringList>
@@ -17,7 +18,9 @@
 #include <QPrintDialog>
 #include <QInputDialog>
 #include <QKeyEvent>
+#include <QFontDialog>
 #include <QApplication>
+#include <QDesktopServices>
 
 QString MainWindow::showFileDialog(QFileDialog::AcceptMode mode, QString title)
 {
@@ -470,7 +473,49 @@ void MainWindow::onToolBar()
     }
 }
 
+void MainWindow::onFormatFont()
+{
+    bool ok = false;
+    QFont font = QFontDialog::getFont (&ok, mainEdit.font (), this);
+
+    if( ok )
+    {
+        mainEdit.setFont (font);
+    }
+}
+
+void MainWindow::onFormatWrap()
+{
+    QPlainTextEdit::LineWrapMode mode = mainEdit.lineWrapMode ();
+
+    if( mode == QPlainTextEdit::NoWrap )
+    {
+        mainEdit.setLineWrapMode (QPlainTextEdit::WidgetWidth);
+
+        findMenuBarAction ("Auto Wrap")->setChecked (true);
+        findToolBarAction ("Auto Wrap")->setChecked (true);
+    }
+    else
+    {
+        mainEdit.setLineWrapMode (QPlainTextEdit::NoWrap);
+
+        findMenuBarAction ("Auto Wrap")->setChecked (false);
+        findToolBarAction ("Auto Wrap")->setChecked (false);
+    }
+}
+
 void MainWindow::onExit()
 {
     close();
+}
+
+void MainWindow::onHelp()
+{
+//    QDesktopServices::openUrl(QUrl("file:///F:/program/Project/NotePad/help.txt"));
+    QDesktopServices::openUrl(QUrl("http://www.baidu.com"));
+}
+
+void MainWindow::onAbout()
+{
+    AboutDialog(this).exec ();
 }

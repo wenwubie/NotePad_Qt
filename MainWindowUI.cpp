@@ -268,11 +268,14 @@ bool MainWindow::initToolItem(QToolBar* tb)
     }
 
     // wrap action
-    ret = ret&& makeAction (action, tb, "Wrap", ":/Res/pic/wrap.png");
+    ret = ret&& makeAction (action, tb, "Auto Wrap", ":/Res/pic/wrap.png");
 
     if( ret )
     {
-    tb->addAction (action);
+        action->setCheckable (true);
+        action->setChecked (true);
+        connect (action, SIGNAL(triggered()), this, SLOT(onFormatWrap()));
+        tb->addAction (action);
     }
 
     // font action
@@ -280,6 +283,7 @@ bool MainWindow::initToolItem(QToolBar* tb)
 
     if( ret )
     {
+        connect (action, SIGNAL(triggered()), this, SLOT(onFormatFont()));
         tb->addAction (action);
     }
 
@@ -548,10 +552,13 @@ bool MainWindow::initFormatMenu(QMenuBar* mb)
         QAction* action = NULL;
 
         // wrap text  action
-        ret = ret && makeAction (action, mb, "Wrap(&W)", 0, true);
+        ret = ret && makeAction (action, mb, "Auto Wrap(&W)", 0, true);
 
         if( ret )
         {
+            action->setCheckable (true);
+            action->setChecked (true);
+            connect (action, SIGNAL(triggered()), this, SLOT(onFormatWrap()));
             formatMenu->addAction (action);
         }
 
@@ -560,6 +567,7 @@ bool MainWindow::initFormatMenu(QMenuBar* mb)
 
         if( ret )
         {
+            connect (action, SIGNAL(triggered()), this, SLOT(onFormatFont()));
             formatMenu->addAction (action);
         }
     }
@@ -632,6 +640,7 @@ bool MainWindow::initHelpMenu(QMenuBar* mb)
 
         if( ret )
         {
+            connect (action, SIGNAL(triggered()), this, SLOT(onHelp()));
             helpMenu->addAction (action);
         }
 
@@ -640,6 +649,7 @@ bool MainWindow::initHelpMenu(QMenuBar* mb)
 
         if( ret )
         {
+            connect (action, SIGNAL(triggered()), this, SLOT(onAbout()));
             helpMenu->addAction (action);
         }
     }

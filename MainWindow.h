@@ -76,8 +76,12 @@ private slots:
     void onEditGoto();
     void onReplace();
     void onStatusBar();
+    void onFormatFont();
+    void onFormatWrap();
     void onToolBar();
     void onExit();
+    void onHelp();
+    void onAbout();
 
 };
 
