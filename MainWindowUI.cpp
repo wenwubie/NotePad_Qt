@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "AppConfig.h"
 #include <QMenu>
 #include <QMenuBar>
 #include <QAction>
@@ -7,6 +8,7 @@
 #include <QStatusBar>
 #include <QLabel>
 #include <QPalette>
+#include <QDebug>
 
 MainWindow::MainWindow() :
     spFindDlg(new FindDialog(this, &mainEdit)),
@@ -37,11 +39,38 @@ bool MainWindow::construction()
 {
     bool ret = true;
 
+    AppConfig config;
+
     ret = ret && initMenuBar ();
     ret = ret && initToolBar();
     ret = ret && initStatusBar ();
     ret = ret && initMainEdit();
 
+    if( config.isValid () )
+    {
+        mainEdit.setFont (config.mainEditFont ());
+
+        if( !config.isAutoWrap () )
+        {
+            mainEdit.setLineWrapMode (QPlainTextEdit::NoWrap);
+            findToolBarAction ("Auto Wrap")->setChecked (false);
+            findMenuBarAction ("Auto Wrap")->setChecked (false);
+        }
+
+        if( !config.isStatusBarVisible () )
+        {
+            statusBar ()->setVisible (false);
+            findToolBarAction ("Status Bar")->setChecked (false);
+            findMenuBarAction ("Status Bar")->setChecked (false);
+        }
+
+        if( !config.isToolBarVisible () )
+        {
+            toolBar ()->setVisible (false);
+            findToolBarAction ("Tool Bar")->setChecked (false);
+            findMenuBarAction ("Tool Bar")->setChecked (false);
+        }
+    }
     return ret;
 }
 
@@ -290,7 +319,7 @@ bool MainWindow::initToolItem(QToolBar* tb)
     tb->addSeparator ();
 
     // tool action
-    ret = ret&& makeAction (action, tb, "Tool", ":/Res/pic/tool.png");
+    ret = ret&& makeAction (action, tb, "Tool Bar", ":/Res/pic/tool.png");
 
     if( ret )
     {
@@ -301,7 +330,7 @@ bool MainWindow::initToolItem(QToolBar* tb)
     }
 
     // status action
-    ret = ret&& makeAction (action, tb, "Status", ":/Res/pic/status.png");
+    ret = ret&& makeAction (action, tb, "Status Bar", ":/Res/pic/status.png");
 
     if( ret )
     {
@@ -702,7 +731,31 @@ bool MainWindow::makeAction(QAction*& action, QWidget* parent, QString tip, QStr
     return ret;
 }
 
+QToolBar* MainWindow::toolBar()
+{
+    QToolBar* ret = NULL;
+
+    const QObjectList& list = children ();
+
+    for(int i=0; i<list.count (); i++)
+    {
+        QToolBar* tb = dynamic_cast<QToolBar*>(list[i]);
+
+        if( tb != NULL )
+        {
+            ret = tb;
+            break;
+        }
+    }
+    return ret;
+}
+
 MainWindow::~MainWindow()
 {
-    
+    QFont font = mainEdit.font ();
+    bool isAutoWrap = (mainEdit.lineWrapMode () == QPlainTextEdit::WidgetWidth);
+    bool sbVisible = findToolBarAction ("Status Bar")->isChecked () && findMenuBarAction ("Status Bar")->isChecked ();
+    bool tbVisible = findToolBarAction ("Tool Bar")->isChecked () && findMenuBarAction ("Tool Bar")->isChecked ();
+    AppConfig config(font, tbVisible, sbVisible, isAutoWrap);
+    config.Store ();
 }

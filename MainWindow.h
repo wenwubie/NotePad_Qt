@@ -59,7 +59,7 @@ protected:
     void dropEvent (QDropEvent* e);
     QAction* findMenuBarAction(QString text);
     QAction* findToolBarAction(QString text);
-
+    QToolBar* toolBar();
 private slots:
     void onFileNew();
     void onFileOpen();

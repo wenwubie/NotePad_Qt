@@ -315,22 +315,16 @@ QAction* MainWindow::findMenuBarAction(QString text)
 QAction* MainWindow::findToolBarAction(QString text)
 {
     QAction* ret = NULL;
-    const QObjectList& list = children ();
-
-    for(int i=0; i<list.count (); i++)
+    QToolBar* tb = toolBar ();
+    if ( tb != NULL )
     {
-        QToolBar* toolBar = dynamic_cast<QToolBar*>(list[i]);
-
-        if( toolBar != NULL)
+        QList<QAction*> actionList = tb->actions ();
+        for(int j=0; j<actionList.count (); j++)
         {
-            QList<QAction*> actionList = toolBar->actions ();
-            for(int j=0; j<actionList.count (); j++)
+            if( actionList[j]->toolTip ().startsWith (text) )
             {
-                if( actionList[j]->toolTip ().startsWith (text) )
-                {
-                    ret = actionList[j];
-                    break;
-                }
+                ret = actionList[j];
+                break;
             }
         }
     }
@@ -446,31 +440,25 @@ void MainWindow::onStatusBar()
 
     sb->setVisible (!visible);
 
-    findToolBarAction ("Status")->setChecked (!visible);
+    findToolBarAction ("Status Bar")->setChecked (!visible);
     findMenuBarAction ("Status Bar")->setChecked (!visible);
 
 }
 
 void MainWindow::onToolBar()
 {
-    const QObjectList& list = children ();
+    QToolBar* tb = toolBar ();
 
-    for(int i=0; i<list.count (); i++)
+    if( tb != NULL )
     {
-        QToolBar* tb = dynamic_cast<QToolBar*>(list[i]);
+        bool visible = tb->isVisible ();
 
-        if( tb != NULL )
-        {
-            bool visible = tb->isVisible ();
+        tb->setVisible (!visible);
 
-            tb->setVisible (!visible);
-
-            findToolBarAction ("Tool")->setChecked(!visible);
-            findMenuBarAction ("Tool Bar")->setChecked (!visible);
-
-            break;
-        }
+        findToolBarAction ("Tool Bar")->setChecked(!visible);
+        findMenuBarAction ("Tool Bar")->setChecked (!visible);
     }
+
 }
 
 void MainWindow::onFormatFont()

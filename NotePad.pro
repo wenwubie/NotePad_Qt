@@ -15,12 +15,14 @@ SOURCES += main.cpp \
     MainWindowSlots.cpp \
     FindDialog.cpp \
     ReplaceDialog.cpp \
-    AboutDialog.cpp
+    AboutDialog.cpp \
+    AppConfig.cpp
 
 HEADERS  += MainWindow.h \
     FindDialog.h \
     ReplaceDialog.h \
-    AboutDialog.h
+    AboutDialog.h \
+    AppConfig.h
 
 RESOURCES += \
     Res.qrc
