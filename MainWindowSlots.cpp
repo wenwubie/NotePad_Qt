@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "AboutDialog.h"
+#include "AppConfig.h"
 #include <QDebug>
 #include <QFileDialog>
 #include <QStringList>
@@ -201,6 +202,15 @@ void MainWindow::onFileOpen()
 
 }
 
+void MainWindow::openFile(QString path)
+{
+    preEditTextChanged ();
+
+    if( !isTextChanged )
+    {
+        OpenFileToEditor (path);
+    }
+}
 
 void MainWindow::onFileSave()
 {
@@ -238,6 +248,13 @@ void MainWindow::closeEvent (QCloseEvent * e)
 
     if( !isTextChanged )
     {
+        QFont font = mainEdit.font ();
+        bool isAutoWrap = (mainEdit.lineWrapMode () == QPlainTextEdit::WidgetWidth);
+        bool sbVisible = statusBar ()->isVisible ();
+        bool tbVisible = toolBar ()->isVisible ();
+        AppConfig config(font, pos(), size(), tbVisible, sbVisible, isAutoWrap);
+        config.Store ();
+
         QMainWindow::closeEvent (e);
     }
     else

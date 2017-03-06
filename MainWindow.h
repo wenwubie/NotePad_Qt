@@ -16,6 +16,7 @@ class MainWindow : public QMainWindow
     
 public:
     static MainWindow* newInstance();
+    void openFile(QString path);
     ~MainWindow();
 
 private:

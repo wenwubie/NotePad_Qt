@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QFont>
+#include <QSize>
+#include <QPoint>
 
 class AppConfig : public QObject
 {
@@ -12,13 +14,16 @@ class AppConfig : public QObject
     bool m_isStatusBarVisible;
     bool m_isAutoWrap;
     bool m_isValid;
-
+    QPoint m_windowPoint;
+    QSize m_windowSize;
     bool Restore();
 public:
     explicit AppConfig(QObject *parent = 0);
-    explicit AppConfig(QFont font, bool istbVisible, bool issbVisible, bool isAutoWrap, QObject *parent = 0);
+    explicit AppConfig(QFont font, QPoint point, QSize size, bool istbVisible, bool issbVisible, bool isAutoWrap, QObject *parent = 0);
     bool Store();
     QFont mainEditFont();
+    QPoint windowPoint();
+    QSize windowSize();
     bool isToolBarVisible();
     bool isStatusBarVisible();
     bool isAutoWrap();

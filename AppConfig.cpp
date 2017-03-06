@@ -7,9 +7,11 @@ AppConfig::AppConfig(QObject *parent) : QObject(parent)
     m_isValid = Restore ();
 }
 
-AppConfig::AppConfig(QFont font, bool istbVisible, bool issbVisible, bool isAutoWrap, QObject *parent)
+AppConfig::AppConfig(QFont font, QPoint point, QSize size, bool istbVisible, bool issbVisible, bool isAutoWrap, QObject *parent)
 {
     m_mainEditFont = font;
+    m_windowPoint = point;
+    m_windowSize = size;
     m_isToolBarVisible =istbVisible;
     m_isStatusBarVisible = issbVisible;
     m_isAutoWrap =isAutoWrap;
@@ -28,6 +30,8 @@ bool AppConfig::Restore()
         in.setVersion (QDataStream::Qt_4_7);
 
         in >> m_mainEditFont;
+        in >> m_windowPoint;
+        in >> m_windowSize;
         in >> m_isToolBarVisible;
         in >> m_isStatusBarVisible;
         in >> m_isAutoWrap;
@@ -54,6 +58,8 @@ bool AppConfig::Store()
         out.setVersion (QDataStream::Qt_4_7);
 
         out << m_mainEditFont;
+        out << m_windowPoint;
+        out << m_windowSize;
         out << m_isToolBarVisible;
         out << m_isStatusBarVisible;
         out << m_isAutoWrap;
@@ -71,6 +77,16 @@ bool AppConfig::Store()
 QFont AppConfig::mainEditFont()
 {
    return m_mainEditFont;
+}
+
+QPoint AppConfig::windowPoint()
+{
+    return m_windowPoint;
+}
+
+QSize AppConfig::windowSize()
+{
+    return m_windowSize;
 }
 
 bool AppConfig::isToolBarVisible()

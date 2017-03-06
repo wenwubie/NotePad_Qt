@@ -70,6 +70,9 @@ bool MainWindow::construction()
             findToolBarAction ("Tool Bar")->setChecked (false);
             findMenuBarAction ("Tool Bar")->setChecked (false);
         }
+
+        move(config.windowPoint ());
+        resize(config.windowSize ());
     }
     return ret;
 }
@@ -752,10 +755,4 @@ QToolBar* MainWindow::toolBar()
 
 MainWindow::~MainWindow()
 {
-    QFont font = mainEdit.font ();
-    bool isAutoWrap = (mainEdit.lineWrapMode () == QPlainTextEdit::WidgetWidth);
-    bool sbVisible = findToolBarAction ("Status Bar")->isChecked () && findMenuBarAction ("Status Bar")->isChecked ();
-    bool tbVisible = findToolBarAction ("Tool Bar")->isChecked () && findMenuBarAction ("Tool Bar")->isChecked ();
-    AppConfig config(font, tbVisible, sbVisible, isAutoWrap);
-    config.Store ();
 }
